@@ -106,16 +106,16 @@ def initialize():
 
         db_path = os.path.join(folder_path, f"{db}.sqlite")
 
-        conn = sqlite3.connect(db_path)
-        cur = conn.cursor()
+        con = sqlite3.connect(db_path)
+        cur = con.cursor()
 
         for tname, tddl in tables.items():
             cur.execute(tddl)
 
         insert_dummy_data(cur, db)
 
-        conn.commit()
-        conn.close()
+        con.commit()
+        con.close()
         check_db_creation(db_path)
 
 def check_db_creation(db_path):
