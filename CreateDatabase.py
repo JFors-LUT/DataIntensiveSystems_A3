@@ -9,7 +9,6 @@ from dummy_data import replicated_ratings, fragmented_ratings_db1, fragmented_ra
 
 
 #Config
-    
 database_directory = "databases"
 db_names = ["db1", "db2", "db3"]
     
@@ -84,28 +83,22 @@ def insert_dummy_data(cursor, db_name):
         "db3": fragmented_ratings_db3
     }
 
-    # Insert users
     for user in list(replicated_users) + list(fragmented_users_map[db_name]):
         cursor.execute("INSERT OR IGNORE INTO users (user_id, name) VALUES (?, ?)", user)
 
-    # Insert movies
     for movie in list(replicated_movies) + list(fragmented_movies_map[db_name]):
         cursor.execute("INSERT OR IGNORE INTO movies (movie_id, title, genre) VALUES (?, ?, ?)", movie)
 
-    # Insert login details
     for login in list(replicated_logins) + list(fragmented_logins_map[db_name]):
         cursor.execute("INSERT OR IGNORE INTO login_details (user_id, email, password) VALUES (?, ?, ?)", login)
 
-    # Insert watch history
     for history in list(replicated_history) + list(fragmented_history_map[db_name]):
         cursor.execute("INSERT OR IGNORE INTO watch_history (history_id, user_id, movie_id, watch_date) VALUES (?, ?, ?, ?)", history)
 
-    # Insert ratings
     for rating in list(replicated_ratings) + list(fragmented_ratings_map[db_name]):
         cursor.execute("INSERT OR IGNORE INTO ratings (rating_id, user_id, movie_id, score) VALUES (?, ?, ?, ?)", rating)
 
 def initialize():
-
     os.makedirs(database_directory, exist_ok=True)
     for db in db_names:
         folder_path = os.path.join(database_directory, db)

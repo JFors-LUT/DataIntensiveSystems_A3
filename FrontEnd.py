@@ -39,10 +39,10 @@ def choose_database():
 
 def show_users(cur):
     cur.execute("""
-        SELECT u.user_id, u.name, ld.email
-        FROM users u
-        LEFT JOIN login_details ld ON u.user_id = ld.user_id
-        ORDER BY u.user_id
+        SELECT users.user_id, users.name, login_details.email
+        FROM users
+        LEFT JOIN login_details ON users.user_id = login_details.user_id
+        ORDER BY users.user_id
     """)
     rows = cur.fetchall()
     for row in rows:
@@ -51,28 +51,29 @@ def show_users(cur):
 def show_movies(cur):
     cur.execute("""
         SELECT 
-            m.title, 
-            m.genre, 
-            COALESCE(wh.count_watched, 0) AS times_watched,
-            COALESCE(r.avg_score, 'No ratings') AS avg_score
-        FROM movies m
+            movies.title, 
+            movies.genre, 
+            COALESCE(watch_history.count_watched, 0) AS times_watched,
+            COALESCE(ratings.avg_score, 0) AS avg_score
+        FROM movies
         LEFT JOIN (
             SELECT movie_id, COUNT(*) AS count_watched
             FROM watch_history
             GROUP BY movie_id
-        ) wh ON m.movie_id = wh.movie_id
+        ) watch_history ON movies.movie_id = watch_history.movie_id
         LEFT JOIN (
             SELECT movie_id, AVG(score) AS avg_score
             FROM ratings
             GROUP BY movie_id
-        ) r ON m.movie_id = r.movie_id
-        ORDER BY times_watched DESC, m.title
+        ) ratings ON movies.movie_id = ratings.movie_id
+        ORDER BY times_watched DESC, avg_score DESC
+
     """)
 
     rows = cur.fetchall()
     for title, genre, times_watched, avg_score in rows:
-        if avg_score != 'No ratings':
-            avg_score = f"{avg_score:.2f}"
+        if avg_score == 0:
+            avg_score = "N/A"
         print(f"{title} | {genre} | Watched: {times_watched} times | Average rating: {avg_score}")
 
 def update_user_name(con, cur):
@@ -107,8 +108,7 @@ def update_user_email(con, cur):
 
     print(f"Current email: {row[0]}")
     new_email = input("Enter new email: ")
-    cur.execute(
-        "UPDATE login_details SET email=? WHERE user_id=?",(new_email, user_id))
+    cur.execute("UPDATE login_details SET email=? WHERE user_id=?",(new_email, user_id))
     con.commit()
     print("Email updated")
 
