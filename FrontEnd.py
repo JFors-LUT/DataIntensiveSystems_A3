@@ -82,7 +82,7 @@ def update_user_name(con, cur):
     if user_id == "0":
         return
     
-    cur.execute("SELECT email FROM login_details WHERE user_id=?", (user_id,))
+    cur.execute("SELECT name FROM users WHERE user_id=?", (user_id,))
     row = cur.fetchone()
 
     if row is None:
