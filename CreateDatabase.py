@@ -56,9 +56,8 @@ tables = {
         """
         }
 
-    # Dummy data generators
 def insert_dummy_data(cursor, db_name):
-    # Map db_name to the correct fragmented sets
+
     fragmented_users_map = {
         "db1": fragmented_users_db1,
         "db2": fragmented_users_db2,
@@ -99,13 +98,11 @@ def insert_dummy_data(cursor, db_name):
 
     # Insert watch history
     for history in list(replicated_history) + list(fragmented_history_map[db_name]):
-        cursor.execute(
-            "INSERT OR IGNORE INTO watch_history (history_id, user_id, movie_id, watch_date) VALUES (?, ?, ?, ?)", history)
+        cursor.execute("INSERT OR IGNORE INTO watch_history (history_id, user_id, movie_id, watch_date) VALUES (?, ?, ?, ?)", history)
 
     # Insert ratings
     for rating in list(replicated_ratings) + list(fragmented_ratings_map[db_name]):
-        cursor.execute(
-            "INSERT OR IGNORE INTO ratings (rating_id, user_id, movie_id, score) VALUES (?, ?, ?, ?)", rating)
+        cursor.execute("INSERT OR IGNORE INTO ratings (rating_id, user_id, movie_id, score) VALUES (?, ?, ?, ?)", rating)
 
 def initialize():
 
@@ -118,7 +115,6 @@ def initialize():
 
         conn = sqlite3.connect(db_path)
         cur = conn.cursor()
-
 
         for tname, tddl in tables.items():
             cur.execute(tddl)

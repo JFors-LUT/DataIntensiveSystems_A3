@@ -20,6 +20,7 @@ def choose_database():
     print("2: db2")
     print("3: db3")
     print("0: Exit")
+    print("INIT to initialize databases, DEL to delete and re-initialize databases")
     choice = input("Enter 1, 2 or 3 (or 0): ")
 
     if choice == "DEL":
@@ -146,7 +147,8 @@ def delete_db():
         else:
             print(f"{db_path} does not exist.")
             return
-    sys.exit()
+    initialize()
+
 
 def main():
     no_database = True
@@ -159,7 +161,7 @@ def main():
             print(f"Connected to {db_path}")
             no_database = False
         else:
-            if db_path == "INIT":
+            if db_path == "INIT" or db_path == "DEL":
                 print(f"{db_path}: Database initialized.")
             else:
                 print(f"Database {db_path} does not exist.")
